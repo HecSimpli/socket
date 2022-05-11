@@ -1,9 +1,10 @@
 // const { socket } = require('socket.io');
-
 const app = require('express')();
 const http = require('http').Server(app);
 const bodyParser = require('body-parser');
+const { assert } = require('console');
 const cors = require('cors');
+const { MongoClient } = require('mongodb');
 const io = require('socket.io')(http,{
     cors:{
         origin: true,
@@ -11,6 +12,9 @@ const io = require('socket.io')(http,{
         methods:["GET", "POST"]
     }
 });
+const url = 'mongodb://localhost:27017';
+const dbName = 'chatAngular';
+let db;
 
 io.on('connection',(socket)=> {
     console.log('New User connected');
@@ -27,12 +31,26 @@ app.use(cors());
 
 app.post('/api/message',(req,res)=> {
     console.log(req.body);
+    db.collection('messages').insertOne({'msg': req.body});
+
     res.status(200).send();
 })
 
 app.get('/',(req,res)=> {
     res.send('<h2>Hello World!</h2>')
 });
+
+MongoClient.connect(url, function(err,client) {
+    
+    if(err) return console.log('mongodb error', err);
+
+    console.log("Connected successfully to server");
+
+    db = client.db(dbName);
+
+    db.collection('messages').insertOne({'msg':'test'});
+
+})
 
 http.listen(3000,()=> {
     console.log('Listening on port 3000');
