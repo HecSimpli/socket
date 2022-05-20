@@ -33,19 +33,22 @@ app.post('/api/message',(req,res)=> {
     console.log(req.body);
     db.collection('messages').insertOne({'msg': req.body});
 
-
     res.status(200).send();
 })
 
- async function GetMessages(){
+app.get('/api/message', async (req, res)=> {
     const docs = await db.collection('messages').find({}).toArray();
-    console.log(docs);
-}
+    
+    if(!docs) return res.json({error:"error getting messages"});
+
+    res.json(docs);
+
+})
 
 
-app.get('/',(req,res)=> {
-    res.send('<h2>Hello World!</h2>')
-});
+// app.get('/',(req,res)=> {
+//     res.send('<h2>Hello World!</h2>')
+// });
 
 MongoClient.connect(url, function(err,client) {
     
@@ -55,7 +58,6 @@ MongoClient.connect(url, function(err,client) {
 
     db = client.db(dbName);
 
-    GetMessages();
 
 });
 
