@@ -46,9 +46,9 @@ app.get('/api/message', async (req, res)=> {
 })
 
 
-// app.get('/',(req,res)=> {
-//     res.send('<h2>Hello World!</h2>')
-// });
+app.get('/',(req,res)=> {
+    res.send('<h2>Hello World!</h2>')
+});
 
 MongoClient.connect(url, function(err,client) {
     
